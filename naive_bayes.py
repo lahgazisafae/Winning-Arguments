@@ -12,16 +12,16 @@ def read_tweets(filepath):
 	for (dirpath, dirnames, filenames) in walk(filepath):
 		f.extend([os.path.join(dirpath,x) for x in filenames])
 	training_list = []
-	for item in f[:5000]:
+	for item in f[:900]:
 		try: 
 			file_object = open(item, 'r')
-			tweet = file_object.readlines()
+			tweet = file_object.read()
 			training_list.append(tweet)
 		except Exception as e:
 			print e 
 			continue
 
-	for item in f[101:111]: 
+	for item in f[911:920]: 
 		try: 
 			file_object = open(item, 'r')
 			tweet = file_object.readlines()
@@ -31,9 +31,9 @@ def read_tweets(filepath):
 			continue
 	return training_list
 
-pos_tweets = read_tweets('tweets_train\pos')
-neg_tweets = read_tweets('tweets_train\\neg')
-
+pos_tweets = read_tweets('data\pos')
+neg_tweets = read_tweets('data\\neg')
+print (type (pos_tweets[0]))
 POS = Counter()
 prob_POS = dict()
 NEG = Counter()
@@ -43,15 +43,12 @@ prob_NEG = dict()
 def train_pos():
 	len_POS = 0
 	for doc in pos_tweets: 
-		# print doc
 		for word in doc[0].split(" "): 
 			word = word.strip().lower()
 			word = re.sub(r'[^\w\s]','', word)
 			#add tweets to POS set
 			POS[word]+=1
 			len_POS+=1
-	# print POS.keys()		
-	# print len_POS
 
 	for t in POS.keys():
 		prob =  POS[t]*1.0/len_POS
@@ -96,21 +93,7 @@ def parse_tweet(test_tweet):
 	else: 
 		return "negative"
 
-def find_mean_score(tweet):
-	tweet = tweet.strip().lower()
-	tweet = re.sub(r'[^\w\s]','', tweet)
-	tweet_arr = tweet.split()
-	mean_words = open('mean_words.txt')
-	data = mean_words.readlines()
-	for x in range(len(data)): 
-		data[x] = data[x].strip()
-	score = 0
-	for word in tweet: 
-		if word in data: 
-			score+=1
-	return score/len(tweet_arr)
-
 for x in test_list:
-	print x[0], parse_tweet(x[0]), find_mean_score(x[0])
+	print x[0], parse_tweet(x[0])
 
 
